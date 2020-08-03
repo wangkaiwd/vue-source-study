@@ -122,6 +122,7 @@ const builds = {
     banner
   },
   // Runtime+compiler development build (Browser)
+  // dev scripts will use following config
   'web-full-dev': {
     entry: resolve('web/entry-runtime-with-compiler.js'),
     dest: resolve('dist/vue.js'),
@@ -215,6 +216,7 @@ const builds = {
   }
 };
 
+// 生成rollup配置项
 function genConfig (name) {
   const opts = builds[name];
   const config = {
@@ -226,6 +228,7 @@ function genConfig (name) {
     ].concat(opts.plugins || []),
     output: {
       file: opts.dest,
+      sourcemap: true,
       format: opts.format,
       banner: opts.banner,
       name: opts.moduleName || 'Vue'
@@ -266,6 +269,7 @@ function genConfig (name) {
 }
 
 if (process.env.TARGET) {
+  // 通过rollup打包时命令行中传入的参数来决定生成的配置项
   module.exports = genConfig(process.env.TARGET);
 } else {
   exports.getBuild = genConfig;
