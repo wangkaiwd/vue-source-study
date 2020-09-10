@@ -20,3 +20,6 @@
 文件浏览：  
 * find declare location of Vue
 
+
+
+![](https://raw.githubusercontent.com/wangkaiwd/drawing-bed/master/20200910233515.png)
