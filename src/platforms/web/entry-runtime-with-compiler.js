@@ -13,7 +13,9 @@ const idToTemplate = cached(id => {
   const el = query(id);
   return el && el.innerHTML;
 });
+// 缓存原有$mount方法
 const mount = Vue.prototype.$mount;
+// 基于原有$mount方法，重写新的$mount方法
 Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean
