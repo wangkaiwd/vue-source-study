@@ -21,3 +21,10 @@
 
 ### `rollup`打包配置
 
+### 问题记录
+
+* [npm 运行`script`时传入额外参数](https://docs.npmjs.com/cli/v6/commands/npm-run-script)
+  * "build": "node scripts/build.js",
+  * "build:ssr": "npm run build -- web-runtime-cjs,web-server-renderer",
+  * 通过`process.argv[2]`就可以拿到`--`后面的参数
+  * 自己在项目开发过程中也可以利用这个特性
