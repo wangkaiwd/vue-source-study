@@ -23,6 +23,7 @@ let builds = require('./config').getAllBuilds();
 // "build:ssr": "npm run build -- web-runtime-cjs,web-server-renderer"
 // 注意：这里的 -- 是npm用来分隔命令行参数的特定符号
 if (process.argv[2]) {
+  // 过滤出命令行中传入参数的对应rollup配置
   const filters = process.argv[2].split(',');
   builds = builds.filter(b => {
     return filters.some(f => b.output.file.indexOf(f) > -1 || b._name.indexOf(f) > -1);
@@ -36,6 +37,7 @@ if (process.argv[2]) {
 }
 build(builds);
 
+// 异步将打包结果打包到dist下对应的文件中
 function build (builds) {
   let built = 0;
   const total = builds.length;

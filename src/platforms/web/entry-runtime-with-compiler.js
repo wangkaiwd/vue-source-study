@@ -33,10 +33,11 @@ Vue.prototype.$mount = function (
   const options = this.$options;
   // resolve template/el and convert to render function
   if (!options.render) {
+    // 没有render选项
     let template = options.template;
-    if (template) {
+    if (template) { // 有template
       if (typeof template === 'string') {
-        if (template.charAt(0) === '#') {
+        if (template.charAt(0) === '#') { // template是id选择器
           template = idToTemplate(template);
           /* istanbul ignore if */
           if (process.env.NODE_ENV !== 'production' && !template) {
@@ -46,7 +47,7 @@ Vue.prototype.$mount = function (
             );
           }
         }
-      } else if (template.nodeType) {
+      } else if (template.nodeType) { // template是真实dom
         template = template.innerHTML;
       } else {
         if (process.env.NODE_ENV !== 'production') {
@@ -54,7 +55,7 @@ Vue.prototype.$mount = function (
         }
         return this;
       }
-    } else if (el) {
+    } else if (el) { // 没有template,但是有el，将el.outerHTML作为template
       template = getOuterHTML(el);
     }
     if (template) {
@@ -62,7 +63,7 @@ Vue.prototype.$mount = function (
       if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
         mark('compile');
       }
-
+      // 将template编译为render函数
       const { render, staticRenderFns } = compileToFunctions(template, {
         outputSourceRange: process.env.NODE_ENV !== 'production',
         shouldDecodeNewlines,

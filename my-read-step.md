@@ -18,6 +18,19 @@
 * 如何快速找到`rollup`源码映射配置项
   * 找到官方提供的配置`example`
   * 在[`rollup-starter-app`](https://github.com/rollup/rollup-starter-app) 中搜索`sourcemap`
+* `npm run build/dev`对应的`rollup`配置中的`entry`即为打包的入口文件
+
+### entry-runtime-with-compiler
+
+* Vue.prototype.$mount:
+  * 重写了(entry-runtime)`$mount`方法
+  * 如果没有传入`render`函数，将`template`编译为`render`函数
+* Vue.compile: compileToFunctions
+
+### entry-runtime
+
+* Vue.prototype.__patch__
+* Vue.prototype.$mount
 
 ### `rollup`打包配置
 
