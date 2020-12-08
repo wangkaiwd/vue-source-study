@@ -27,13 +27,16 @@
   * 如果没有传入`render`函数，将`template`编译为`render`函数
 * Vue.compile: compileToFunctions
 
-### entry-runtime
+### runtime/index
 
 * Vue.prototype.__patch__
 * Vue.prototype.$mount
+* directives: v-show,v-model
+* components: Transition, TransitionGroup
 
 ### `rollup`打包配置
-* 执行`npm run dev`所对应的入口和输出文件：  
+
+* 执行`npm run dev`所对应的入口和输出文件：
   ```js
   'web-full-dev': {
     entry: resolve('web/entry-runtime-with-compiler.js'),
@@ -44,10 +47,13 @@
     banner
   }
   ```
+
 ### 问题记录
 
 * [npm 运行`script`时传入额外参数](https://docs.npmjs.com/cli/v6/commands/npm-run-script)
   * "build": "node scripts/build.js",
   * "build:ssr": "npm run build -- web-runtime-cjs,web-server-renderer",
-  * 通过[process.argv[2]](https://github.com/vuejs/vue/blob/4f81b5db9ab553ca0abe0706ac55ceb861344330/scripts/build.js#L14-L24) 就可以拿到`--`后面的参数
+  *
+  通过[process.argv[2]](https://github.com/vuejs/vue/blob/4f81b5db9ab553ca0abe0706ac55ceb861344330/scripts/build.js#L14-L24)
+  就可以拿到`--`后面的参数
   * 自己在项目开发过程中也可以利用这个特性
