@@ -124,7 +124,7 @@ const builds = {
     banner
   },
   // Runtime+compiler development build (Browser)
-  // dev scripts will use following config
+  // dev scripts will use following config, build bundle is dist/vue.js
   'web-full-dev': {
     entry: resolve('web/entry-runtime-with-compiler.js'),
     dest: resolve('dist/vue.js'),
