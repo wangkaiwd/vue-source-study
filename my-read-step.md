@@ -34,6 +34,14 @@
 * directives: v-show,v-model
 * components: Transition, TransitionGroup
 
+### src/core/index
+
+* initGlobalApi
+
+### src/core/instance/index
+
+* Vue
+
 ### `rollup`打包配置
 
 * 执行`npm run dev`所对应的入口和输出文件：
