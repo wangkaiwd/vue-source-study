@@ -16,6 +16,7 @@ function Vue (options) {
 }
 
 // 扩展原型
+// Vue.prototype._init
 initMixin(Vue);
 stateMixin(Vue);
 eventsMixin(Vue);
