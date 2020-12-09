@@ -27,6 +27,10 @@
   * 如果没有传入`render`函数，将`template`编译为`render`函数
 * Vue.compile: compileToFunctions
 
+日常开发时我们使用的是: entry-runtime 版本，通过`vue-loader`来提前在构建时将`template`编译到`JavaScript`中
+
+* [Explanation of Different Builds](https://vuejs.org/v2/guide/installation.html#Explanation-of-Different-Builds)
+
 ### runtime/index
 
 * Vue.prototype.__patch__
