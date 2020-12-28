@@ -47,7 +47,8 @@ Vue.prototype.$mount = function (
             );
           }
         }
-      } else if (template.nodeType) { // template是真实dom
+        // 说明template是html模板，不用处理
+      } else if (template.nodeType) { // template是真实dom，获取其innerHTML
         template = template.innerHTML;
       } else {
         if (process.env.NODE_ENV !== 'production') {
@@ -58,7 +59,7 @@ Vue.prototype.$mount = function (
     } else if (el) { // 没有template,但是有el，将el.outerHTML作为template
       template = getOuterHTML(el);
     }
-    if (template) {
+    if (template) { // template为html字符串
       /* istanbul ignore if */
       if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
         mark('compile');
