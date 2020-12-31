@@ -161,9 +161,9 @@ export function defineReactive (
     get: function reactiveGetter () {
       const value = getter ? getter.call(obj) : val;
       if (Dep.target) {
-        dep.depend();
+        dep.depend(); // 用当前作用域内提供的dep收集依赖的watcher
         if (childOb) {
-          childOb.dep.depend();
+          childOb.dep.depend(); // 为在Observer中定义的dep收集依赖的watcher,此时对象会多收集一个依赖，但是并没有对其进行notify
           if (Array.isArray(value)) {
             dependArray(value);
           }
@@ -188,6 +188,7 @@ export function defineReactive (
       } else {
         val = newVal;
       }
+      // 更新childOb，继续收集它的依赖
       childOb = !shallow && observe(newVal);
       dep.notify();
     }
