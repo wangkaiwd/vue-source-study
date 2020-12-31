@@ -10,18 +10,24 @@
 </head>
 <body>
 <div id="app">
-  {{msg}}
-  <span>world</span>
+  <ul>
+    <li v-for="(value,name) in person">
+      {{name}}:{{value}}
+    </li>
+  </ul>
 </div>
 <script>
-  new Vue({
+  const vm = new Vue({
     el: '#app',
     data () {
       return {
-        msg: 'hello'
+        person: {
+          name: 'zs'
+        }
       };
     }
   });
+  vm.$set(vm.person, 'age', 18);
 </script>
 </body>
 </html>

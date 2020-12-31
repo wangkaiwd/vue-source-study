@@ -199,6 +199,9 @@ export function defineReactive (
  * Set a property on an object. Adds the new property and
  * triggers change notification if the property doesn't
  * already exist.
+ *  数组： 数组不能直接通过索引来修改值，但是可以通过$set来设置值，内部会调用数组的splice方法，data中splice方法被重写
+ *
+ *  对象： 会利用到之前在Observer中设置的dep,这里会通过defineReactive方法，为对象新加的属性设置get/set方法，并在get中收集watcher,在set中通知watcher进行更新
  */
 export function set (target: Array<any> | Object, key: any, val: any): any {
   if (process.env.NODE_ENV !== 'production' &&
@@ -206,15 +209,22 @@ export function set (target: Array<any> | Object, key: any, val: any): any {
   ) {
     warn(`Cannot set reactive property on undefined, null, or primitive value: ${(target: any)}`);
   }
+  //
   if (Array.isArray(target) && isValidArrayIndex(key)) {
+    // [1,2]
+    // this.$set(this.arr,2,3)
+    // 如果key -> 对应的index大于length,要将数组长度变长
     target.length = Math.max(target.length, key);
+    // 将原数组中的对应索引项删除，然后将val作为新的内容增加到原来的位置
     target.splice(key, 1, val);
     return val;
   }
+  // 如果在对象中存在，不做处理
   if (key in target && !(key in Object.prototype)) {
     target[key] = val;
     return val;
   }
+  // 之前在Observer中为对象添加的__ob__
   const ob = (target: any).__ob__;
   if (target._isVue || (ob && ob.vmCount)) {
     process.env.NODE_ENV !== 'production' && warn(
@@ -227,13 +237,27 @@ export function set (target: Array<any> | Object, key: any, val: any): any {
     target[key] = val;
     return val;
   }
+  // 为新添加的属性调用defineReactive,为新属性添加set/get方法，以及new Dep来收集它的watcher
   defineReactive(ob.value, key, val);
+  // 这里要通知target执行它的dep所收集的依赖，之后会重新通过vm._render()来生成虚拟dom,而_render在执行的时候，会从vm实例上进行取值，取值会调用get方法进行watcher收集
+  // 此时就会将新添加属性的dep的watcher进行搜集
   ob.dep.notify();
   return val;
 }
 
 /**
  * Delete a property and trigger change if necessary.
+ *
+ * 数组：使用splice方法删除元素
+ *
+ * 对象：通过dep来触发收集的watcher，通知页面更新
+ *  页面更新：
+ *    1. 将template编译为ast语法树
+ *    2. 将ast语法树生成代码字符串
+ *    3. 将代码字符串通过new Function + with处理成render函数
+ *    4. 实现render函数中用到的方法，执行render函数
+ *    5. render函数执行时会从vm实例上获取对应的数据，会触发get方法，收集watcher。watcher内会对收集的watcher去重，不会导致重复收集
+ *    6. render函数执行会返回一个虚拟节点，如果是首次渲染，将虚拟节点替换为真实节点。不过不是首次渲染，需要将新虚拟节点和老虚拟节点进行比对，通过dom diff来更新页面
  */
 export function del (target: Array<any> | Object, key: any) {
   if (process.env.NODE_ENV !== 'production' &&
