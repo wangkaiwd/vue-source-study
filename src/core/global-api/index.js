@@ -62,9 +62,12 @@ export function initGlobalAPI (Vue: GlobalAPI) {
   Vue.options._base = Vue;
 
   extend(Vue.options.components, builtInComponents); // KeepAlive
-
+  // Vue.use
   initUse(Vue);
+  // Vue.mixin
   initMixin(Vue);
+  // Vue.extend： 利用继承创建一个Vue的子类
   initExtend(Vue);
+  // Vue.component/filter/directive
   initAssetRegisters(Vue);
 }

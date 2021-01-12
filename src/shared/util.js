@@ -1,23 +1,23 @@
 /* @flow */
 
-export const emptyObject = Object.freeze({})
+export const emptyObject = Object.freeze({});
 
 // These helpers produce better VM code in JS engines due to their
 // explicitness and function inlining.
 export function isUndef (v: any): boolean %checks {
-  return v === undefined || v === null
+  return v === undefined || v === null;
 }
 
 export function isDef (v: any): boolean %checks {
-  return v !== undefined && v !== null
+  return v !== undefined && v !== null;
 }
 
 export function isTrue (v: any): boolean %checks {
-  return v === true
+  return v === true;
 }
 
 export function isFalse (v: any): boolean %checks {
-  return v === false
+  return v === false;
 }
 
 /**
@@ -30,7 +30,7 @@ export function isPrimitive (value: any): boolean %checks {
     // $flow-disable-line
     typeof value === 'symbol' ||
     typeof value === 'boolean'
-  )
+  );
 }
 
 /**
@@ -39,16 +39,16 @@ export function isPrimitive (value: any): boolean %checks {
  * is a JSON-compliant type.
  */
 export function isObject (obj: mixed): boolean %checks {
-  return obj !== null && typeof obj === 'object'
+  return obj !== null && typeof obj === 'object';
 }
 
 /**
  * Get the raw type string of a value, e.g., [object Object].
  */
-const _toString = Object.prototype.toString
+const _toString = Object.prototype.toString;
 
 export function toRawType (value: any): string {
-  return _toString.call(value).slice(8, -1)
+  return _toString.call(value).slice(8, -1);
 }
 
 /**
@@ -56,19 +56,19 @@ export function toRawType (value: any): string {
  * for plain JavaScript objects.
  */
 export function isPlainObject (obj: any): boolean {
-  return _toString.call(obj) === '[object Object]'
+  return _toString.call(obj) === '[object Object]';
 }
 
 export function isRegExp (v: any): boolean {
-  return _toString.call(v) === '[object RegExp]'
+  return _toString.call(v) === '[object RegExp]';
 }
 
 /**
  * Check if val is a valid array index.
  */
 export function isValidArrayIndex (val: any): boolean {
-  const n = parseFloat(String(val))
-  return n >= 0 && Math.floor(n) === n && isFinite(val)
+  const n = parseFloat(String(val));
+  return n >= 0 && Math.floor(n) === n && isFinite(val);
 }
 
 export function isPromise (val: any): boolean {
@@ -76,7 +76,7 @@ export function isPromise (val: any): boolean {
     isDef(val) &&
     typeof val.then === 'function' &&
     typeof val.catch === 'function'
-  )
+  );
 }
 
 /**
@@ -87,7 +87,7 @@ export function toString (val: any): string {
     ? ''
     : Array.isArray(val) || (isPlainObject(val) && val.toString === _toString)
       ? JSON.stringify(val, null, 2)
-      : String(val)
+      : String(val);
 }
 
 /**
@@ -95,8 +95,8 @@ export function toString (val: any): string {
  * If the conversion fails, return original string.
  */
 export function toNumber (val: string): number | string {
-  const n = parseFloat(val)
-  return isNaN(n) ? val : n
+  const n = parseFloat(val);
+  return isNaN(n) ? val : n;
 }
 
 /**
@@ -107,34 +107,34 @@ export function makeMap (
   str: string,
   expectsLowerCase?: boolean
 ): (key: string) => true | void {
-  const map = Object.create(null)
-  const list: Array<string> = str.split(',')
+  const map = Object.create(null);
+  const list: Array<string> = str.split(',');
   for (let i = 0; i < list.length; i++) {
-    map[list[i]] = true
+    map[list[i]] = true;
   }
   return expectsLowerCase
     ? val => map[val.toLowerCase()]
-    : val => map[val]
+    : val => map[val];
 }
 
 /**
  * Check if a tag is a built-in tag.
  */
-export const isBuiltInTag = makeMap('slot,component', true)
+export const isBuiltInTag = makeMap('slot,component', true);
 
 /**
  * Check if an attribute is a reserved attribute.
  */
-export const isReservedAttribute = makeMap('key,ref,slot,slot-scope,is')
+export const isReservedAttribute = makeMap('key,ref,slot,slot-scope,is');
 
 /**
  * Remove an item from an array.
  */
 export function remove (arr: Array<any>, item: any): Array<any> | void {
   if (arr.length) {
-    const index = arr.indexOf(item)
+    const index = arr.indexOf(item);
     if (index > -1) {
-      return arr.splice(index, 1)
+      return arr.splice(index, 1);
     }
   }
 }
@@ -142,44 +142,45 @@ export function remove (arr: Array<any>, item: any): Array<any> | void {
 /**
  * Check whether an object has the property.
  */
-const hasOwnProperty = Object.prototype.hasOwnProperty
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+
 export function hasOwn (obj: Object | Array<*>, key: string): boolean {
-  return hasOwnProperty.call(obj, key)
+  return hasOwnProperty.call(obj, key);
 }
 
 /**
  * Create a cached version of a pure function.
  */
 export function cached<F: Function> (fn: F): F {
-  const cache = Object.create(null)
+  const cache = Object.create(null);
   return (function cachedFn (str: string) {
-    const hit = cache[str]
-    return hit || (cache[str] = fn(str))
-  }: any)
+    const hit = cache[str];
+    return hit || (cache[str] = fn(str));
+  }: any);
 }
 
 /**
  * Camelize a hyphen-delimited string.
  */
-const camelizeRE = /-(\w)/g
+const camelizeRE = /-(\w)/g;
 export const camelize = cached((str: string): string => {
-  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
-})
+  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '');
+});
 
 /**
  * Capitalize a string.
  */
 export const capitalize = cached((str: string): string => {
-  return str.charAt(0).toUpperCase() + str.slice(1)
-})
+  return str.charAt(0).toUpperCase() + str.slice(1);
+});
 
 /**
  * Hyphenate a camelCase string.
  */
-const hyphenateRE = /\B([A-Z])/g
+const hyphenateRE = /\B([A-Z])/g;
 export const hyphenate = cached((str: string): string => {
-  return str.replace(hyphenateRE, '-$1').toLowerCase()
-})
+  return str.replace(hyphenateRE, '-$1').toLowerCase();
+});
 
 /**
  * Simple bind polyfill for environments that do not support it,
@@ -192,60 +193,61 @@ export const hyphenate = cached((str: string): string => {
 /* istanbul ignore next */
 function polyfillBind (fn: Function, ctx: Object): Function {
   function boundFn (a) {
-    const l = arguments.length
+    const l = arguments.length;
     return l
       ? l > 1
         ? fn.apply(ctx, arguments)
         : fn.call(ctx, a)
-      : fn.call(ctx)
+      : fn.call(ctx);
   }
 
-  boundFn._length = fn.length
-  return boundFn
+  boundFn._length = fn.length;
+  return boundFn;
 }
 
 function nativeBind (fn: Function, ctx: Object): Function {
-  return fn.bind(ctx)
+  return fn.bind(ctx);
 }
 
 export const bind = Function.prototype.bind
   ? nativeBind
-  : polyfillBind
+  : polyfillBind;
 
 /**
  * Convert an Array-like object to a real Array.
  */
 export function toArray (list: any, start?: number): Array<any> {
-  start = start || 0
-  let i = list.length - start
-  const ret: Array<any> = new Array(i)
+  start = start || 0;
+  let i = list.length - start;
+  const ret: Array<any> = new Array(i);
   while (i--) {
-    ret[i] = list[i + start]
+    ret[i] = list[i + start];
   }
-  return ret
+  return ret;
 }
 
 /**
  * Mix properties into target object.
  */
+// 用_from中的属性覆盖to中的属性
 export function extend (to: Object, _from: ?Object): Object {
   for (const key in _from) {
-    to[key] = _from[key]
+    to[key] = _from[key];
   }
-  return to
+  return to;
 }
 
 /**
  * Merge an Array of Objects into a single Object.
  */
 export function toObject (arr: Array<any>): Object {
-  const res = {}
+  const res = {};
   for (let i = 0; i < arr.length; i++) {
     if (arr[i]) {
-      extend(res, arr[i])
+      extend(res, arr[i]);
     }
   }
-  return res
+  return res;
 }
 
 /* eslint-disable no-unused-vars */
@@ -260,22 +262,22 @@ export function noop (a?: any, b?: any, c?: any) {}
 /**
  * Always return false.
  */
-export const no = (a?: any, b?: any, c?: any) => false
+export const no = (a?: any, b?: any, c?: any) => false;
 
 /* eslint-enable no-unused-vars */
 
 /**
  * Return the same value.
  */
-export const identity = (_: any) => _
+export const identity = (_: any) => _;
 
 /**
  * Generate a string containing static keys from compiler modules.
  */
 export function genStaticKeys (modules: Array<ModuleOptions>): string {
   return modules.reduce((keys, m) => {
-    return keys.concat(m.staticKeys || [])
-  }, []).join(',')
+    return keys.concat(m.staticKeys || []);
+  }, []).join(',');
 }
 
 /**
@@ -283,37 +285,37 @@ export function genStaticKeys (modules: Array<ModuleOptions>): string {
  * if they are plain objects, do they have the same shape?
  */
 export function looseEqual (a: any, b: any): boolean {
-  if (a === b) return true
-  const isObjectA = isObject(a)
-  const isObjectB = isObject(b)
+  if (a === b) return true;
+  const isObjectA = isObject(a);
+  const isObjectB = isObject(b);
   if (isObjectA && isObjectB) {
     try {
-      const isArrayA = Array.isArray(a)
-      const isArrayB = Array.isArray(b)
+      const isArrayA = Array.isArray(a);
+      const isArrayB = Array.isArray(b);
       if (isArrayA && isArrayB) {
         return a.length === b.length && a.every((e, i) => {
-          return looseEqual(e, b[i])
-        })
+          return looseEqual(e, b[i]);
+        });
       } else if (a instanceof Date && b instanceof Date) {
-        return a.getTime() === b.getTime()
+        return a.getTime() === b.getTime();
       } else if (!isArrayA && !isArrayB) {
-        const keysA = Object.keys(a)
-        const keysB = Object.keys(b)
+        const keysA = Object.keys(a);
+        const keysB = Object.keys(b);
         return keysA.length === keysB.length && keysA.every(key => {
-          return looseEqual(a[key], b[key])
-        })
+          return looseEqual(a[key], b[key]);
+        });
       } else {
         /* istanbul ignore next */
-        return false
+        return false;
       }
     } catch (e) {
       /* istanbul ignore next */
-      return false
+      return false;
     }
   } else if (!isObjectA && !isObjectB) {
-    return String(a) === String(b)
+    return String(a) === String(b);
   } else {
-    return false
+    return false;
   }
 }
 
@@ -324,20 +326,20 @@ export function looseEqual (a: any, b: any): boolean {
  */
 export function looseIndexOf (arr: Array<mixed>, val: mixed): number {
   for (let i = 0; i < arr.length; i++) {
-    if (looseEqual(arr[i], val)) return i
+    if (looseEqual(arr[i], val)) return i;
   }
-  return -1
+  return -1;
 }
 
 /**
  * Ensure a function is called only once.
  */
 export function once (fn: Function): Function {
-  let called = false
+  let called = false;
   return function () {
     if (!called) {
-      called = true
-      fn.apply(this, arguments)
+      called = true;
+      fn.apply(this, arguments);
     }
-  }
+  };
 }
