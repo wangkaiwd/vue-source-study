@@ -297,6 +297,7 @@ function initMethods (vm: Component, methods: Object) {
 function initWatch (vm: Component, watch: Object) {
   for (const key in watch) {
     const handler = watch[key];
+    // watch的可能值：{[key:string]: string | Function | Object | Array}
     if (Array.isArray(handler)) {
       for (let i = 0; i < handler.length; i++) {
         createWatcher(vm, key, handler[i]);
@@ -313,13 +314,16 @@ function createWatcher (
   handler: any,
   options?: Object
 ) {
+  // object: { handler: function() {}, immediate:true, deep: true}
   if (isPlainObject(handler)) {
     options = handler;
     handler = handler.handler;
   }
+  // string: 从实例vm上获取对应的methods(在initMethods时已经进行了处理)
   if (typeof handler === 'string') {
     handler = vm[handler];
   }
+  // 函数的话不用处理
   return vm.$watch(expOrFn, handler, options);
 }
 
@@ -361,7 +365,7 @@ export function stateMixin (Vue: Class<Component>) {
     options = options || {};
     options.user = true;
     const watcher = new Watcher(vm, expOrFn, cb, options);
-    if (options.immediate) {
+    if (options.immediate) { // 如果传入了immediately选项，会在watcher中执行了首次的取值操作后立即调用，此时老值为undefined
       try {
         cb.call(vm, watcher.value);
       } catch (error) {
