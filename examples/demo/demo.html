@@ -25,9 +25,18 @@
           name: 'zs'
         }
       };
+    },
+    watch: {
+      person: {
+        handler (newVal, oldVal) {
+          console.log('val', newVal, oldVal);
+        },
+        deep: true
+      }
     }
   });
-  vm.$set(vm.person, 'age', 18);
+  vm.person.name = 'ls';
+  // vm.$set(vm.person, 'age', 18);
 </script>
 </body>
 </html>
