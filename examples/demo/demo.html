@@ -22,20 +22,23 @@
     data () {
       return {
         person: {
-          name: 'zs'
+          name: 'zs',
+          obj: { a: 1, b: [1, 2, 3] },
         }
       };
     },
     watch: {
       person: {
         handler (newVal, oldVal) {
+          // 由于是引用，此时获取到的新值和旧值相同，因为修改的是同一片内存空间
           console.log('val', newVal, oldVal);
         },
         deep: true
       }
     }
   });
-  vm.person.name = 'ls';
+  // vm.person.obj.a = 'ls';
+  vm.person.obj.b.push(4);
   // vm.$set(vm.person, 'age', 18);
 </script>
 </body>

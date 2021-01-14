@@ -115,6 +115,10 @@ export default class Watcher {
       // dependencies for deep watching
       if (this.deep) {
         // value 是 watch中key在vm中对应的值
+        // 不过不设置deep: 对象中的元素更新无法被观察到，即不会触发key对应的value来获取到新值和旧值
+        // 设置了deep: 在watch watcher执行get方法时，对被观察的key对应的data中的值继续进行取值操作，让它们也收集当前的watch watcher
+        // 之后当对象中的某个属性更新，也会通过它的set方法来执行watch的更新操作，用新值和旧值来执行它的value
+        // traverse: 核心思路，遍历观察的值的每一项，这个过程会触发对应属性的取值操作，数组也会通过取值操作，利用在Observer中添加的dep属性来收集数组对应的watch watcher
         traverse(value);
       }
       popTarget();

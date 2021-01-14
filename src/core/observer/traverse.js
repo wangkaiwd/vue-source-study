@@ -12,7 +12,6 @@ const seenObjects = new Set();
  * is collected as a "deep" dependency.
  */
 export function traverse (val: any) {
-  debugger
   _traverse(val, seenObjects);
   seenObjects.clear();
 }
@@ -24,14 +23,17 @@ function _traverse (val: any, seen: SimpleSet) {
     return;
   }
   if (val.__ob__) {
+    // 已经遍历过的对象会存放它对应的dep id,不会进行重复遍历
     const depId = val.__ob__.dep.id;
     if (seen.has(depId)) {
       return;
     }
     seen.add(depId);
   }
+  // [1,2,3]
   if (isA) {
     i = val.length;
+    // 这里遍历数组的每一项，是为了当数组中有对象时，继续为对象的属性收集依赖
     while (i--) _traverse(val[i], seen);
   } else {
     keys = Object.keys(val);
