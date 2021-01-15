@@ -60,6 +60,7 @@ function sameInputType (a, b) {
 function createKeyToOldIdx (children, beginIdx, endIdx) {
   let i, key;
   const map = {};
+
   for (i = beginIdx; i <= endIdx; ++i) {
     key = children[i].key;
     if (isDef(key)) map[key] = i;
@@ -422,8 +423,9 @@ export function createPatchFunction (backend) {
       checkDuplicateKeys(newCh);
     }
 
+    // 真正的diff比对逻辑
     while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
-      if (isUndef(oldStartVnode)) {
+      if (isUndef(oldStartVnode)) { // 跳过空元素
         oldStartVnode = oldCh[++oldStartIdx]; // Vnode has been moved left
       } else if (isUndef(oldEndVnode)) {
         oldEndVnode = oldCh[--oldEndIdx];
@@ -445,8 +447,10 @@ export function createPatchFunction (backend) {
         canMove && nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm);
         oldEndVnode = oldCh[--oldEndIdx];
         newStartVnode = newCh[++newStartIdx];
-      } else {
+      } else { // 乱序比对
+        // 为老的虚拟节点生成key和索引的映射关系
         if (isUndef(oldKeyToIdx)) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx);
+        // 要移动元素的索引
         idxInOld = isDef(newStartVnode.key)
           ? oldKeyToIdx[newStartVnode.key]
           : findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx);
@@ -466,10 +470,10 @@ export function createPatchFunction (backend) {
         newStartVnode = newCh[++newStartIdx];
       }
     }
-    if (oldStartIdx > oldEndIdx) {
+    if (oldStartIdx > oldEndIdx) { // 多余的新节点插入到DOM中
       refElm = isUndef(newCh[newEndIdx + 1]) ? null : newCh[newEndIdx + 1].elm;
       addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue);
-    } else if (newStartIdx > newEndIdx) {
+    } else if (newStartIdx > newEndIdx) { // 删除剩余的老节点
       removeVnodes(oldCh, oldStartIdx, oldEndIdx);
     }
   }
@@ -699,7 +703,8 @@ export function createPatchFunction (backend) {
   }
 
   return function patch (oldVnode, vnode, hydrating, removeOnly) {
-    if (isUndef(vnode)) {
+    if (isUndef(vnode)) { // 新节点undefined
+      // 老节点定义存在，销毁老节点
       if (isDef(oldVnode)) invokeDestroyHook(oldVnode);
       return;
     }
@@ -707,17 +712,17 @@ export function createPatchFunction (backend) {
     let isInitialPatch = false;
     const insertedVnodeQueue = [];
 
-    if (isUndef(oldVnode)) {
+    if (isUndef(oldVnode)) { // 渲染子组件：老节点不存在，直接将vNode渲染为真实节点，但是还没有插入到页面中
       // empty mount (likely as component), create new root element
       isInitialPatch = true;
       createElm(vnode, insertedVnodeQueue);
     } else {
       const isRealElement = isDef(oldVnode.nodeType);
       if (!isRealElement && sameVnode(oldVnode, vnode)) {
-        // patch existing root node
+        // patch existing root node： 老的虚拟节点和新的虚拟节点进行diff
         patchVnode(oldVnode, vnode, insertedVnodeQueue, null, null, removeOnly);
       } else {
-        if (isRealElement) {
+        if (isRealElement) { // 首次渲染，挂载真实节点
           // mounting to a real element
           // check if this is server-rendered content and if we can perform
           // a successful hydration.
