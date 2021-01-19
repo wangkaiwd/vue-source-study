@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="../../dist/vue.js"></script>
+</head>
+<body>
+<div id="app">
+  {{name}}
+  <button @click="count++">change count</button>
+  <button @click="name=name+1">change name</button>
+  <hello-world :count="count"></hello-world>
+</div>
+<script>
+  // 一个属性可能在多个组件中共用，此时它对应的dep会收集所有组件的渲染watcher
+  const HelloWorld = {
+    props: ['count'],
+    template: `
+      <div class="hello-world">{{count}}</div>`,
+  };
+  new Vue({
+    el: '#app',
+    components: {
+      HelloWorld,
+    },
+    data () {
+      return {
+        name: 'zs',
+        count: 0
+      };
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="../../dist/vue.js"></script>
+</head>
+<body>
+<div id="app">
+  <h2>子组件</h2>
+  <!-- onDelete 中的 i 的传参问题 -->
+  <child
+    v-for="(item, i) in array"
+    :text="item.key"
+    :key="`${i}+child`"
+    @remove="onDelete(i)"
+  >
+  </child>
+</div>
+<script>
+  const Child = {
+    template: `
+      <div>
+      <h2>value: {{ value }}</h2>
+      {{ text }}
+      <input v-model="value"/>
+      <button @click="onDelete">delete</button>
+      </div>
+    `,
+    props: ['text'],
+    data () {
+      return {
+        // 如果没有key的话，数据总会删除最后一项？
+        value: 'xx',
+      };
+    },
+    methods: {
+      onDelete () {
+        this.$emit('remove', 'xxx');
+      },
+    },
+  };
+  new Vue({
+    el: '#app',
+    data () {
+      return {
+        array: [
+          { key: 1, value: '圆形' },
+          { key: 2, value: '正方形' },
+          { key: 3, value: '三角形' },
+        ],
+      };
+    },
+    components: {
+      Child
+    },
+    methods: {
+      onDelete (i) {
+        this.array.splice(i, 1);
+      },
+    }
+  });
+</script>
+</body>
+</html>

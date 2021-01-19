@@ -212,6 +212,9 @@ export function mountComponent (
   return vm;
 }
 
+/**
+ *  更新插槽、属性、事件
+ */
 export function updateChildComponent (
   vm: Component,
   propsData: ?Object,
